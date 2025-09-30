@@ -26,19 +26,19 @@ jobs:
 
       - name: Test user-service
         run: |
-          if [ ! -f user-service/server.json ]; then
-            echo "❌ user-service/server.json missing!"
+          if [ ! -f user-service/server.js ]; then
+            echo "❌ user-service/server.js missing!"
             exit 1
           fi
-          echo "✅ user-service/server.json found"
+          echo "✅ user-service/server.js found"
 
       - name: Test product-service
         run: |
-          if [ ! -f product-service/server.json ]; then
-            echo "❌ product-service/server.json missing!"
+          if [ ! -f product-service/server.js ]; then
+            echo "❌ product-service/server.js missing!"
             exit 1
           fi
-          echo "✅ product-service/server.json found"
+          echo "✅ product-service/server.js found"
 
   deploy:
     name: Deploy to EC2

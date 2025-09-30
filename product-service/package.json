@@ -1,7 +1,7 @@
 {
   "name": "product-service",
   "version": "1.0.0",
-  "master": "server.json",
-0  "scripts": { "start": "node server.json" },
+  "master": "server.js",
+0  "scripts": { "start": "node server.js" },
   "dependencies": { "express": "^4.18.2" }
 }
