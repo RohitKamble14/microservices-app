@@ -57,13 +57,34 @@ jobs:
 
       - name: Deploy via SSH
         uses: appleboy/ssh-action@master
-        with:
-          host: ${{ secrets.SSH_HOST }}
-          username: ${{ secrets.SSH_USER }}
-          key: ${{ secrets.ACTIONS_DEPLOY_KEY }}
-          script: |
-            cd ~/microservices-app || git clone https://github.com/${{ github.repository }} ~/microservices-app
-            cd ~/microservices-app
-            git pull origin master
-            docker compose down || true
-            docker compose up -d --build
+  with:
+    host: ${{ secrets.SSH_HOST }}
+    username: ${{ secrets.SSH_USER }}
+    key: ${{ secrets.ACTIONS_DEPLOY_KEY }}
+    script: |
+      # Create directory if it doesn't exist
+      mkdir -p ~/microservices-app
+      
+      # Clone or update repository (use 'master' branch)
+      if [ -d ~/microservices-app/.git ]; then
+        cd ~/microservices-app
+        git fetch origin
+        git reset --hard origin/master
+        git pull origin master
+      else
+        git clone -b master https://github.com/${{ github.repository }} ~/microservices-app
+        cd ~/microservices-app
+      fi
+      
+      # Install Node.js dependencies
+      cd ~/microservices-app/user-service && npm install
+      cd ~/microservices-app/product-service && npm install
+      cd ~/microservices-app/order-service && npm install
+      
+      # Restart services with PM2
+      pm2 delete all || true
+      pm2 start ~/microservices-app/user-service/server.js --name user-service
+      pm2 start ~/microservices-app/product-service/server.js --name product-service
+      pm2 start ~/microservices-app/order-service/server.js --name order-service
+      pm2 save
+      pm2 list
