@@ -26,11 +26,11 @@ jobs:
 
       - name: Test user-service
         run: |
-          if [ ! -f user-service/server.js ]; then
-            echo "❌ user-service/server.js missing!"
+          if [ ! -f user-service/server.json ]; then
+            echo "❌ user-service/server.json missing!"
             exit 1
           fi
-          echo "✅ user-service/server.js found"
+          echo "✅ user-service/server.json found"
 
       - name: Test product-service
         run: |
