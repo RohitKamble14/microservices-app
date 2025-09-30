@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Microservices Demo</title>
+    <style>
+      body { font-family: Arial; text-align: center; margin-top: 50px; }
+      h1 { color: #2c3e50; }
+      button { padding: 10px 20px; margin: 5px; cursor: pointer; }
+    </style>
+  </head>
+  <body>
+    <h1>🚀 Microservices Frontend</h1>
+    <button onclick="fetchUser()">Get User</button>
+    <button onclick="fetchProduct()">Get Product</button>
+    <p id="output"></p>
+
+    <script>
+      async function fetchUser() {
+        const res = await fetch('/api/user');
+        const text = await res.text();
+        document.getElementById('output').innerText = text;
+      }
+      async function fetchProduct() {
+        const res = await fetch('/api/product');
+        const text = await res.text();
+        document.getElementById('output').innerText = text;
+      }
+    </script>
+  </body>
+</html>
