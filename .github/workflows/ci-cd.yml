@@ -78,19 +78,6 @@ jobs:
               cd ~/microservices-app
             fi
             
-            # Install Node.js dependencies
-            cd ~/microservices-app/user-service && npm install
-            cd ~/microservices-app/product-service && npm install
-            cd ~/microservices-app/order-service && npm install
-            
-            # Restart services with PM2
-            pm2 delete all || true
-            pm2 start ~/microservices-app/user-service/server.js --name user-service
-            pm2 start ~/microservices-app/product-service/server.js --name product-service
-            pm2 start ~/microservices-app/order-service/server.js --name order-service
-            pm2 save
-            pm2 list
-
       - name: Post Checkout code
         uses: actions/checkout@v4
 
