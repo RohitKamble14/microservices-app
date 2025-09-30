@@ -34,11 +34,11 @@ jobs:
 
       - name: Test product-service
         run: |
-          if [ ! -f product-service/server.js ]; then
-            echo "❌ product-service/server.js missing!"
+          if [ ! -f product-service/server.json ]; then
+            echo "❌ product-service/server.json missing!"
             exit 1
           fi
-          echo "✅ product-service/server.js found"
+          echo "✅ product-service/server.json found"
 
   deploy:
     name: Deploy to EC2
