@@ -1,0 +1,19 @@
+version: "3"
+services:
+  frontend:
+    build: ./frontend
+    ports:
+      - "80:80"
+    depends_on:
+      - user
+      - product
+
+  user:
+    build: ./user-service
+    ports:
+      - "3001:3001"
+
+  product:
+    build: ./product-service
+    ports:
+      - "3002:3002"

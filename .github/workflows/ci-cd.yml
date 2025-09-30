@@ -1,0 +1,70 @@
+name: CI/CD Microservices App
+
+on:
+  push:
+    branches: [ "master" ]
+  workflow_dispatch:
+
+jobs:
+  build-test:
+    name: Build & Test
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Build Frontend (demo)
+        run: echo "Building frontend..."  
+
+      - name: Test frontend exists
+        run: |
+          if [ ! -f frontend/index.html ]; then
+            echo "❌ frontend/index.html missing!"
+            exit 1
+          fi
+          echo "✅ frontend/index.html found"
+
+      - name: Test user-service
+        run: |
+          if [ ! -f user-service/server.js ]; then
+            echo "❌ user-service/server.js missing!"
+            exit 1
+          fi
+          echo "✅ user-service/server.js found"
+
+      - name: Test product-service
+        run: |
+          if [ ! -f product-service/server.js ]; then
+            echo "❌ product-service/server.js missing!"
+            exit 1
+          fi
+          echo "✅ product-service/server.js found"
+
+  deploy:
+    name: Deploy to EC2
+    runs-on: ubuntu-latest
+    needs: build-test
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup SSH
+        run: |
+          mkdir -p ~/.ssh
+          echo "${{ secrets.ACTIONS_DEPLOY_KEY }}" > ~/.ssh/id_rsa
+          chmod 600 ~/.ssh/id_rsa
+          ssh-keyscan -H ${{ secrets.SSH_HOST }} >> ~/.ssh/known_hosts
+
+      - name: Deploy via SSH
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USER }}
+          key: ${{ secrets.ACTIONS_DEPLOY_KEY }}
+          script: |
+            cd ~/microservices-app || git clone https://github.com/${{ github.repository }} ~/microservices-app
+            cd ~/microservices-app
+            git pull origin main
+            docker compose down || true
+            docker compose up -d --build
+
